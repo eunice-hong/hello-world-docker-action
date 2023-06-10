@@ -1,15 +1,10 @@
-# Container image that runs your code
-FROM alpine:3.10
+FROM google/dart:2.15.1
+
+WORKDIR /app
+
+COPY pubspec.* ./
+RUN dart pub get --no-precompile
 
 COPY . .
 
-WORKDIR /
-
-# Give permission to execute the entrypoint.sh
-RUN chmod +x entrypoint.sh
-
-# Copies your code file from your action repository to the filesystem path `/` of the container
-COPY entrypoint.sh /entrypoint.sh
-
-# Code file to execute when the docker container starts up (`entrypoint.sh`)
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["dart", "-Ddart.vm.args=--enable-asserts", "bin/main.dart"]
